@@ -4,10 +4,15 @@ import  _sqlite3
 #import  re
 
 def createTable():
-    con.execute("CREATE TABLE IF NOT EXISTS Top250(Title TEXT, ReleaseDate INT, Rating REAL)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS Top250(Title TEXT, ReleaseDate INT, Rating REAL)")
 
-#def addValue():
+def addValue(title,rDate,rating):
+    cursor.execute("INSERT INTO Top250(Title, ReleaseDate, Rating) VALUES(?,?,?)", (title,rDate,rating))
+    con.commit()
 
+def delete():
+    cursor.execute("DELETE FROM Top250")
+    con.commit()
 
 con = _sqlite3.connect("imdb.db")
 cursor = con.cursor()
@@ -22,7 +27,7 @@ var = var[0].find_all("tr")
 
 film_arr = []
 
-#print("----------- TOP 250 -----------")
+createTable()
 
 for film in var:
     filmbasliklari = (film.find_all("td", {"class":"titleColumn"}))
@@ -31,13 +36,19 @@ for film in var:
 
     #print (re.findall(r"[\w']+", film_ismi))
 
-    #film_arr = film_ismi.split(".      ")
-    #txt = film_arr[1]
-    #print(int(txt[txt.find('(')+1 : txt.find(')')])) # Filmin cikis tarihini cekiyor
-    #print((txt.split("("))[0])
+    film_arr = film_ismi.split(".      ")
+    txt = film_arr[1]
 
+    release_Date = int(txt[txt.find('(')+1 : txt.find(')')]) # Filmin cikis tarihini cekiyor
 
-    #deger = (film.find_all("td", {"class": "ratingColumn imdbRating"}))
-    #rating = deger[0].text
-    #rating = rating.replace("\n","")
+    title = (txt.split("("))[0]
 
+    deger = (film.find_all("td", {"class": "ratingColumn imdbRating"}))
+    rating = deger[0].text
+    rating = rating.replace("\n","")
+    rating = float(rating)
+
+    addValue(title, release_Date, rating)
+
+#delete()
+con.close()
