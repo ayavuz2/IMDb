@@ -39,7 +39,7 @@ for film in var:
     film_arr = film_ismi.split(".      ")
     txt = film_arr[1]
 
-    release_Date = int(txt[txt.find('(')+1 : txt.find(')')]) # Filmin cikis tarihini cekiyor
+    release_Date = int(txt[txt.find('(')+1 : txt.find(')')])
 
     title = (txt.split("("))[0]
 
